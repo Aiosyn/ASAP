@@ -58,11 +58,11 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libijg8.so /usr/lib/libijg8.so; exit 0;
 
 WORKDIR /root
 RUN wget -q ftp://dicom.offis.de/pub/dicom/offis/software/dcmtk/dcmtk364/dcmtk-3.6.4.tar.gz && tar xzf dcmtk-3.6.4.tar.gz && mv dcmtk-3.6.4 dcmtk && rm dcmtk-3.6.4.tar.gz
-RUN git clone https://github.com/computationalpathologygroup/ASAP src &&\
-    mkdir build
+RUN mkdir build
 
 WORKDIR /root/build
-COPY build_ASAP.sh /root/build/build_ASAP.sh
+COPY . /root/build/src/
+COPY buildtools/build_ASAP.sh /root/build/build_ASAP.sh
 RUN chmod a+rxwX ./build_ASAP.sh
 
 CMD ./build_ASAP.sh
