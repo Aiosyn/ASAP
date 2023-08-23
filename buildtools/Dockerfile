@@ -61,7 +61,7 @@ RUN wget -q ftp://dicom.offis.de/pub/dicom/offis/software/dcmtk/dcmtk364/dcmtk-3
 RUN mkdir build
 
 WORKDIR /root/build
-COPY . /root/build/src/
+COPY . /root/src/
 COPY buildtools/build_ASAP.sh /root/build/build_ASAP.sh
 RUN chmod a+rxwX ./build_ASAP.sh
 
