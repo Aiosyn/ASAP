@@ -1,4 +1,4 @@
-ARG UBUNTU_VERSION=18.04
+ARG UBUNTU_VERSION=20.04
 
 FROM ubuntu:${UBUNTU_VERSION}
 
@@ -22,6 +22,7 @@ RUN apt-get update \
         libdcmtk-dev \
         libopenjp2-7-dev \
         libopenslide-dev \
+        libpugixml-dev \
         wget \
         swig \
         libunittest++-dev \
@@ -43,12 +44,11 @@ RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     rm -f Miniconda3-latest-Linux-x86_64.sh
 
 RUN /root/miniconda3/bin/conda update --quiet -n base -c defaults conda && \
-    /root/miniconda3/bin/conda create --quiet --name build_python3.6m python=3.6 && \
-    /root/miniconda3/bin/conda install --quiet -n build_python3.6m numpy=1.19 nomkl &&\
-    /root/miniconda3/bin/conda create --quiet --name build_python3.7m python=3.7 && \
-    /root/miniconda3/bin/conda install --quiet -n build_python3.7m numpy=1.19 nomkl && \
-    /root/miniconda3/bin/conda create --quiet --name build_python3.8 python=3.8 && \
-    /root/miniconda3/bin/conda install --quiet -n build_python3.8 numpy=1.19 nomkl
+    /root/miniconda3/bin/conda create --quiet --name build_python3.6m python=3.6  numpy nomkl && \
+    /root/miniconda3/bin/conda create --quiet --name build_python3.7m python=3.7  numpy nomkl && \
+    /root/miniconda3/bin/conda create --quiet --name build_python3.8  python=3.8  numpy nomkl && \
+    /root/miniconda3/bin/conda create --quiet --name build_python3.9  python=3.9  numpy nomkl && \
+    /root/miniconda3/bin/conda create --quiet --name build_python3.10 python=3.10 numpy nomkl
 
 RUN ln -sd /root/miniconda3/envs/build_python3.7m/lib/python3.7 /root/miniconda3/envs/build_python3.7m/lib/python3.7m && \
     ln -sd /root/miniconda3/envs/build_python3.6m/lib/python3.6 /root/miniconda3/envs/build_python3.6m/lib/python3.6m
@@ -57,12 +57,11 @@ RUN ln -sd /root/miniconda3/envs/build_python3.7m/lib/python3.7 /root/miniconda3
 RUN ln -s /usr/lib/x86_64-linux-gnu/libijg8.so /usr/lib/libijg8.so; exit 0;
 
 WORKDIR /root
-RUN wget -q https://github.com/zeux/pugixml/archive/v1.9.tar.gz && tar xzf v1.9.tar.gz && rm v1.9.tar.gz && \
-    wget -q ftp://dicom.offis.de/pub/dicom/offis/software/dcmtk/dcmtk364/dcmtk-3.6.4.tar.gz && tar xzf dcmtk-3.6.4.tar.gz && mv dcmtk-3.6.4 dcmtk && rm dcmtk-3.6.4.tar.gz
+RUN wget -q ftp://dicom.offis.de/pub/dicom/offis/software/dcmtk/dcmtk364/dcmtk-3.6.4.tar.gz && tar xzf dcmtk-3.6.4.tar.gz && mv dcmtk-3.6.4 dcmtk && rm dcmtk-3.6.4.tar.gz
 RUN git clone https://github.com/computationalpathologygroup/ASAP src &&\
     mkdir build
 
-WORKDIR /root/build      
+WORKDIR /root/build
 COPY build_ASAP.sh /root/build/build_ASAP.sh
 RUN chmod a+rxwX ./build_ASAP.sh
 
